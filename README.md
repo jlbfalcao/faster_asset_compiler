@@ -2,6 +2,10 @@
 
 A pure java yui and closure compressor, loading directly .jar files.
 
+Current versions:
+* yuicompressor: 2.4.8
+* closure: v20130823
+
 ## Installation
 
 Add this line to your application's Gemfile:
