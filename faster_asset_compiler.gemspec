@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = FasterAssetCompiler::VERSION
   spec.authors       = ["Jorge Falcão"]
   spec.email         = ["falcao@intelie.com.br"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.description   = %q{}
+  spec.summary       = %q{A simple and faster rails asset compiler - JRuby only!}
+  spec.homepage      = "https://github.com/jlbfalcao/faster_asset_compiler"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)

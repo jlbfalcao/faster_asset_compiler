@@ -1,11 +1,8 @@
 
 module YUI
-
-  JAR_FILE = File.expand_path('../yuicompressor-2.4.8.jar', __FILE__)
-
   class Compressor
     def initialize
-      require JAR_FILE
+      require File.expand_path('../yuicompressor-2.4.8.jar', __FILE__)
       java_import java.io.InputStreamReader
       java_import java.io.OutputStreamWriter
       java_import com.yahoo.platform.yui.compressor.JavaScriptCompressor
@@ -16,14 +13,11 @@ module YUI
       output = StringIO.new
       reader = InputStreamReader.new(StringIO.new(content.to_s).to_inputstream)
       writer = OutputStreamWriter.new(output.to_outputstream)
-      compressor = yield(reader)
-      # compressor = CssCompressor.new(reader)    
-      compressor.compress(writer, *options)
-
+      compressor = yield(reader, writer)
+      
       writer.flush
       output.rewind
       output.read
-
     end
   end
 
@@ -36,63 +30,38 @@ module YUI
       end
     end
 
+    alias :warning :error
+
     def runtimeError(*args)
       raise 'Compression failed: %s' % error(*args)
     end
   end
 
   class CssCompressor < Compressor
-
-    def options
-      # TODO: customize
-      { :line_break => nil }
-    end
-
-
-
     def compress(css)
-      stream(css) do |reader|
-         Java::ComYahooPlatformYuiCompressor::CssCompressor.new(reader)   
+      stream(css) do |reader, writer|
+        compressor = Java::ComYahooPlatformYuiCompressor::CssCompressor.new(reader)   
+        compressor.compress(writer, 0)
+        compressor
       end
-      # output = StringIO.new
-      # reader = InputStreamReader.new(StringIO.new(css.to_s).to_inputstream)
-      # writer = OutputStreamWriter.new(output.to_outputstream)
-      # compressor = CssCompressor.new(reader)    
-      # compressor.compress(writer, *command_arguments(options))
-
-      # writer.flush
-      # output.rewind
-      # output.read
     end
   end
 
   class JavaScriptCompressor < Compressor
-
-    def options
-      {
-        :line_break => nil,
-        :munge => true,
-        :preserve_semicolons => false,
-        :optimize => true
-      }
-    end
-
     def compress(js)
-      # stream(js) do |reader|
-      #   compressor = Java::ComYahooPlatformYuiCompressor::JavaScriptCompressor.new(reader, ErrorReporter.new) 
-      # end
-      output = StringIO.new
-      reader = InputStreamReader.new(StringIO.new(js.to_s).to_inputstream)
-      writer = OutputStreamWriter.new(output.to_outputstream)
-      compressor = Java::ComYahooPlatformYuiCompressor::JavaScriptCompressor.new(reader, ErrorReporter.new)    
-      compressor.compress(writer, *command_arguments(options))
-      puts "done"
+      stream(js) do |reader, writer|
+        compressor = Java::ComYahooPlatformYuiCompressor::JavaScriptCompressor.new(reader, ErrorReporter.new) 
+        
+        linebreak = 0
+        munge = true
+        verbose = false
+        preserveAllSemiColons = false
+        disableOptimizations = false
 
-      writer.flush
-      output.rewind
-      output.read
+        compressor.compress(writer, linebreak, munge, verbose, preserveAllSemiColons, disableOptimizations)
+        compressor
+      end
     end
   end
 end
-
 

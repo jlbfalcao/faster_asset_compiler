@@ -1,6 +1,4 @@
 
-require 'benchmark'
-
 module Closure
   class Compiler
     def initialize
@@ -16,33 +14,25 @@ module Closure
       import java.util.logging.Level
       
       @opts = CompilerOptions.new
+      # @opts.skipAllCompilerPasses()
       
       # TODO: configure Compilation Level
       CompilationLevel::SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(@opts)
       
       # TODO: configure Warning Level
       # WarningLevel.const_get(warning_level).setOptionsForWarningLevel(opts)
-      com.google.javascript.jscomp.Compiler.setLoggingLevel(Level::WARNING)
+      com.google.javascript.jscomp.Compiler.setLoggingLevel(Level::SEVERE)
     end
 
     def compress(js)
-      puts "Compiling javascript"
-      return js
-      result = nil
-      Benchmark.bm do |x|
-        x.report do
-          source = JSSourceFile.fromCode("unknown", js)
-          compiler = Java::ComGoogleJavascriptJscomp::Compiler.new
+      source = JSSourceFile.fromCode("unknown", js)
+      compiler ||= Java::ComGoogleJavascriptJscomp::Compiler.new
 
-          res = compiler.compile([], [source], @opts)
-          result = compiler.toSource() + "\n"
-
-          raise Error, result unless res.success
-          # yield(StringIO.new(result)) if block_given?
-        end
-      end
-      return result# nothing todo.
+      res = compiler.compile([], [source], @opts)
+      result = compiler.toSource() + "\n"
+      
+      raise Error, result unless res.success
+      return result
     end
   end
 end
-
