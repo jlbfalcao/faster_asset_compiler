@@ -1,6 +1,6 @@
 # FasterAssetCompiler
 
-TODO: Write a gem description
+A pure java yui and closure compressor, loading directly .jar files.
 
 ## Installation
 
@@ -8,22 +8,16 @@ Add this line to your application's Gemfile:
 
     gem 'faster_asset_compiler'
 
-And then execute:
+And add to production.rb
 
-    $ bundle
+    config.assets.compress = true
+    config.assets.js_compressor = :yui # or closure - is a little bit slower than yui
+    config.assets.css_compressor = :yui
 
-Or install it yourself as:
+Restrictions:
+* Don't use js_compressor = :yui and therubyrhino; don't work.
 
-    $ gem install faster_asset_compiler
+## TODO
 
-## Usage
+* Add more customization to compressors
 
-TODO: Write usage instructions here
-
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
