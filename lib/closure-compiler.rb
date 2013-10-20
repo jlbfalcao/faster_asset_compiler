@@ -1,4 +1,3 @@
-
 module Closure
   class Compiler
     def initialize
@@ -24,7 +23,7 @@ module Closure
       com.google.javascript.jscomp.Compiler.setLoggingLevel(Level::SEVERE)
     end
 
-    def compress(js)
+    def compile(js)
       source = JSSourceFile.fromCode("unknown", js)
       compiler ||= Java::ComGoogleJavascriptJscomp::Compiler.new
 
