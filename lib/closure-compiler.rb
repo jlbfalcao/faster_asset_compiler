@@ -33,5 +33,7 @@ module Closure
       raise Error, result unless res.success
       return result
     end
+    
+    alias :compress :compile
   end
 end
